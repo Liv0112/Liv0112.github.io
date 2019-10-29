@@ -1,13 +1,18 @@
-name: "Yay internet!"
+name: "Yiwen Wang"
 output_dir: "."
 navbar:
   title: "Home"
+  left:
+    - text: "Blog"
+      href: blog.html
   right:
-    - text: "About"
-      href: about.html
     - icon: fa-envelope fa-lg
-      href: mailto:<you@youremail.com>
+      href: mailto:<yw0112wang@gmail.com>
+    - icon: fa-twitter fa-lg
+      href: https://twitter.com/wywshuai
     - icon: fa-github fa-lg
-      href: http://github.com/<YOUR_GH_NAME>/
+      href: http://github.com/Liv0112
+    - icon: fa-linkedin fa-lg
+      href: https://www.linkedin.com/in/yiwen-wang-b2174715b/
 output:
   html_document

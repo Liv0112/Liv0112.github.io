@@ -1,0 +1,17 @@
+---
+title: "Blog"
+output: html_document
+---
+
+
+<br>
+
+<br><img src="images/GGPLOT2.png" alt="yiwen" style="width:80%; border:0px solid"><br>
+
+<br>
+
+### How to improve visualizations in R by using ggplot2
+Oct 29, 2019
+
+In this blog post, I will provide some common but simple methods you can use when try to create an informative and meaningful graphic in R using ggplot2.  
+[Read On](Blog1.html)
