@@ -1,0 +1,17 @@
+---
+title: "Yiwen Wang"
+---
+
+
+```{r, out.width = '70%', fig.align="center", echo = FALSE}
+library(knitr)
+include_graphics("images/peru.jpeg")
+```
+
+
+<br>
+I am currently a graduate student in Biostatistics and Data Science at [Weill Cornell Medicine](http://weill.cornell.edu). I accepted a high-intensity programming training in R and Python, which enables me to deal with extensive dataset through cleaning, transforming, and integrating datasets, especially in the healthcare field, and to generate informative analysis efficiently. I am looking forward to getting or sharing fantastic ideas with you!
+
+My full resume is available [here](files/Resume-Yiwen Wang.pdf).
+
+
