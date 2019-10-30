@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Yiwen Wang" />
+
+<meta name="date" content="2019-10-29" />
+
+<title>How to improve visualization in R using ggplot2</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Home</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="Blog.html">Blog</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="mailto:&lt;yw0112wang@gmail.com&gt;">
+    <span class="fa fa-envelope fa-lg"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="https://github.com/Liv0112/">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="https://twitter.com/wywshuai">
+    <span class="fa fa-twitter fa-lg"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="https://www.linkedin.com/in/yiwen-wang-b2174715b/">
+    <span class="fa fa-linkedin fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">How to improve visualization in R using ggplot2</h1>
+<h4 class="author">Yiwen Wang</h4>
+<h4 class="date">10/29/2019</h4>
+
+</div>
+
+
+<div id="why-is-visualization-important" class="section level2">
+<h2>Why is visualization important?</h2>
+<p>“The greatest value of a picture is when it forces us to notice what we never expected to see.” –John Tukey</p>
+<p>Data visualization is the act of transferring complex information and delivering it in a visual version, such as a map or graph.</p>
+<p>Data visualizations make various kinds of data easier for the human brain to understand, and visualization also makes it easier to detect patterns, trends, and outliers in groups of data.</p>
+<p>Good data visualizations should place meaning into complicated datasets so that their message is clear and concise.</p>
+<p>In this blog post, I will provide some common but simple methods you can use when trying to create an informative and meaningful graphic in R using ggplot2.</p>
+<p><br></p>
+</div>
+<div id="creating-a-ggplot" class="section level2">
+<h2>Creating a ggplot</h2>
+<p>Before we start using ggplot2, which is a core member of the tidyverse, we need to install and load the tidyverse by running the following code:</p>
+<pre class="r"><code>install.packages(&quot;tidyverse&quot;)</code></pre>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<p><br></p>
+<div id="histogram" class="section level4">
+<h4>Histogram</h4>
+<p>For the first example, we will use NHANES data, which can be found on <a href="http://biostat.mc.vanderbilt.edu/wiki/Main/DataSets" class="uri">http://biostat.mc.vanderbilt.edu/wiki/Main/DataSets</a>. This is a dataset contains the results of general examinations of patients.</p>
+<p>How can we make a histogram that colors the heights of women differently from the heights of men that results in the two histograms on the same plot? We can use <em>position = “identity”</em> argument in <strong>geom_histogram</strong> to make the height distributions not stacked based on sex. Use xlab or ylab can modify the labels of the x-axis or y-axis.</p>
+<pre class="r"><code>dat_NHANES &lt;- read_tsv(&quot;nhgh.tsv&quot;)
+dat_NHANES%&gt;% 
+  ggplot(aes(x = ht, color = sex, fill = sex))+
+  geom_histogram(binwidth = 1.5, alpha = 0.5, position = &quot;identity&quot;)+
+  labs(title = &quot;Distributions of Female and Male Heights: Histogram&quot;)+ ## add title to plot
+  xlab(&quot;height&quot;) ## label x-axis of plot</code></pre>
+<p><img src="Blog1_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>By using a histogram we can clearly compare the distribution of two different groups. From this histogram, we find that the distributions of heights appear to be symmetric like a normal distribution. The heights of females are generally smaller than the heights of males. The heights of females appears centered around 160. The heights of males appears to be centered around 173. The distribution of male heights appears to have more variability (spread) than that of females.</p>
+<p><br></p>
+</div>
+<div id="scatterplot" class="section level4">
+<h4>Scatterplot</h4>
+<p>Another plot people often use is scatterplot. A scatter plot is a type of plot or mathematical diagram using Cartesian coordinates to display values for typically two variables for a set of data. It can show some relationships between two variables. In this example, we can create a scatterplot to explore the relationship between the number of crossings per day (volume) with the high temperature that day by using <strong>geom_point</strong>.</p>
+<pre class="r"><code>library(mosaic)
+g &lt;- ggplot(RailTrail, aes(y = volume, x = hightemp, colour = precip)) +
+  geom_point() +
+  ylab(&#39;Volume of Trail Use&#39;) + ## label y-axis of plot
+  xlab(&#39;Daily High Temperature (Degrees Fahrenheit)&#39;) + ## label x-axis of plot
+  ggtitle(&#39;Volume of Users of Rail Trail&#39;) + ## add title to plot
+  labs(colour = &quot;Precipitation \n(Inches)&quot;) ## add title to legend
+g</code></pre>
+<p><img src="Blog1_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>If you want to figure out the difference between the weekday and the weekend, you can add facets (<em>facet_wrap</em>) to separate them into two side-by-side plots. Moreover, by adding a regression line (<strong>geom_smooth</strong>), you can further find the relationship between these two variables.</p>
+<pre class="r"><code>RailTrail &lt;- RailTrail %&gt;%
+  mutate(dayType2 = if_else(dayType == &#39;weekend&#39;, &#39;Weekend&#39;, &#39;Weekday&#39;))
+## update data for plot g to have dayType2
+g &lt;- g %+% RailTrail+
+  facet_wrap(~dayType2)+
+  geom_smooth(method = &#39;lm&#39;) ## add a regression line
+g</code></pre>
+<p><img src="Blog1_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p><br></p>
+</div>
+<div id="line-plot" class="section level4">
+<h4>Line plot</h4>
+<p>A line plot or line chart is a common type of chart that displays information as a series of data points called ‘markers’ connected by straight line segments. It is similar to a scatter plot except that the measurement points are ordered (typically by their x-axis value) and joined with straight line segments. A line chart is often used to visualize a trend in data over intervals of time – a time series – thus the line is often drawn chronologically.</p>
+<p>In this example, we choose to create a line plot to better reflect the seasonal patterns of cancelled flights that departed NYC in 2013 by using <strong>geom_line</strong>.</p>
+<pre class="r"><code>library(nycflights13)
+prop.delays &lt;- flights %&gt;%
+  group_by(month) %&gt;% 
+  summarise(prop.delays = sum(is.na(dep_time))/n()) ## calculate the proportion of cancelled flights
+
+ggplot(prop.delays, aes(x= month, y = prop.delays)) + 
+  geom_line() +
+  xlab(&#39;Month&#39;) + ## label x-axis of plot
+  ylab(&#39;Proportion of Delays&#39;) + ## label y-axis of plot
+  ggtitle(&#39;Proportion of Delays by Month&#39;) ## add title to plot</code></pre>
+<p><img src="Blog1_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>From the plot above we can get the trend of cancelled flights during the whole year. The fewest delays appear to occur in the Spring and Fall. The highest number of delays occur during the winter months and the second-highest number of delays occurs during the summer months.</p>
+<p><br></p>
+</div>
+<div id="boxplot" class="section level4">
+<h4>Boxplot</h4>
+<p>A boxplot is a method for graphically depicting groups of numerical data through their quartiles. Boxplot may also have lines extending vertically from the boxes indicating variability outside the upper and lower quartiles. Outliers may be plotted as individual points. The spacings between the different parts of the box indicate the degree of dispersion (spread) and skewness in the data, and show outliers. In addition to the points themselves, they allow one to visually estimate the interquartile range, range, and median.</p>
+<p>In this example, we will create a boxplot to compare the GDP per capita for each continent by using <strong>geom_boxplot</strong>.</p>
+<pre class="r"><code>library(gapminder)
+gapminder%&gt;%
+  filter(year==2007)%&gt;%
+  ggplot(aes(x = continent, y = gdpPercap, fill=continent))+
+  geom_boxplot()+
+  xlab(&#39;continent&#39;) + ## label x-axis of plot
+  ylab(&#39;GDP per capita&#39;) + ## label y-axis of plot
+  ggtitle(&#39;The GDP per capita for each continent&#39;) ## add title to plot</code></pre>
+<p><img src="Blog1_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p>Boxplot can provide lots of information to help directly compare a variable between different groups. For example, from the plot above we can see that Asia and Europe have the most variability in their countries’ GDP per capita because their boxplots have the longest length: both the box itself as well as the length from one whisker to the other.</p>
+<p><br></p>
+</div>
+</div>
+<div id="summary" class="section level2">
+<h2>Summary</h2>
+<p>After learning R for two months, I find that ggplot is very fantastic and intelligible. For instance, while writing a line chart takes more characters of code than it does in base graphics it tends to be much clearer what is going on. I hope my blog could help you figure out any problems you met or give you some inspirations in the future study.</p>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
